@@ -1,114 +1,69 @@
-/*#include<iostream>
-#include<vector>
-#include<algorithm>
+#include <iostream>
+#include <cstdio>
+#include <cmath>
+#define INF 9999999
+#define MAX1 600
+#define MAX2 10050
+int dp[MAX1][MAX2];
+#define DEBUG
 using namespace std;
-vector<int>l2;
-inline int find(int n,int l){
-	int s=0;
-	int e=l;
-	int m;
-	while(s<=e){
-		m=(s+e)/2;
-		if(l2[m]>=n)
-			e=m-1;
-		else
-			s=m+1;
-	}
-	if(l2[s]==n){
-		int is=s;
-		s=0;
-		e=l;
-		while(s<=e){
-			m=(s+e)/2;
-			if(l2[m]<=n)
-				s=m+1;
-			else
-				e=m-1;
+int main()
+{
+	int T;
+	scanf ("%d",&T);
+	while (T--)
+	{
+		int E,F;
+		int N;
+		scanf ("%d%d",&E,&F);
+		scanf ("%d",&N);
+		int W = F - E;
+		//int keep[N + 1][W + 1];
+		int w[N + 1],v[N + 1];
+		for (int i = 1; i <= N; i++)
+		{
+			scanf ("%d%d",&v[i],&w[i]);
+ 
 		}
-		return e-is+1;
-	}
-	else
-		return 0;
-}
-int main(){
-    int n,x;
-    cin>>n;
-    for(int i=0;i<n;i++){
-        cin>>x;
-        l2.push_back(x);
-    }
-    sort(l2.begin(),l2.end());
-    cout<<find(1,n-1)<<endl;
-    return 0;
-}*/
-#include<iostream>
-#include<cstdio>
-#include<algorithm>
-using namespace std;
-int a[4000],b[4000],c[4000],d[4000];
-int l1[16000000],l2[16000000];
-inline int find(int n,int l){
-	int s=0;
-	int e=l;
-	int m;
-	while(s<=e){
-		m=(s+e)/2;
-		if(l2[m]>=n)
-			e=m-1;
-		else
-			s=m+1;
-	}
-	if(l2[s]==n){
-		int is=s;
-		s=0;
-		e=l;
-		while(s<=e){
-			m=(s+e)/2;
-			if(l2[m]<=n)
-				s=m+1;
-			else
-				e=m-1;
+		for (int i = 1; i <= N; i++)
+			dp[i][0] = 0;
+		for (int i = 1; i <= N; i++)
+		{
+			for (int j = 1; j <= W; j++)
+			{
+				if (i == 1 and j < w[i])
+				{
+					dp[i][j] = INF;
+					//keep[i][j] = 0;
+				}
+				else if (i == 1)
+				{
+					dp[i][j] = v[i] + dp[i][j - w[i]];
+					//keep[i][j] = 1;
+				}
+				else if (j < w[i])
+				{
+					dp[i][j] = dp[i - 1][j];
+					//keep[i][j] = 0;
+				}
+				else
+				{
+					dp[i][j] = min(dp[i - 1][j],v[i] + dp[i][j - w[i]]);
+					//keep[i][j] = 1;
+				}
+			}
 		}
-		return e-is+1;
+		if (dp[N][W] >= INF)
+		{
+			printf ("%d This is impossible.\n",T);
+		}
+		else
+		{
+			printf ("%d The minimum amount of money in the piggy-bank is %d.\n",T,dp[N][W]);
+		}
+		
+		
+ 
 	}
-	else
-		return 0;
-}
-inline int trim(int *arr,int n){
-	int j=1;
-	for(int i=1;i<n;i++)
-		if(arr[i]!=arr[i-1])
-		arr[j++]=arr[i];
-	return j;
-}
-int main(){
-	int n;
-	scanf("%d",&n);
-	for(int i=0;i<n;i++)
-		scanf("%d %d %d %d",a+i,b+i,c+i,d+i);
-	int la,lb,lc,ld;
-	/*sort(a,a+n);
-	sort(b,b+n);
-	sort(c,c+n);
-	sort(d,d+n);
-	la=trim(a,n);
-	lb=trim(b,n);
-	lc=trim(c,n);
-	ld=trim(d,n);*/
-	int k1=0;
-	la=lb=lc=ld=n;
-	for(int i=0;i<la;i++)
-		for(int j=0;j<lb;j++)
-			l1[k1++]=a[i]+b[j];
-	int k2=0;
-	for(int i=0;i<lc;i++)
-		for(int j=0;j<ld;j++)
-			l2[k2++]=c[i]+d[j];
-	long long ans=0;
-	sort(l2,l2+k2);
-	k2--;
-	for(int i=0;i<k1;i++)
-		ans+=find(-l1[i],k2);
-	cout<<ans<<endl;
 	return 0;
 }
