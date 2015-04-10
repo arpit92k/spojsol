@@ -13,38 +13,44 @@
 #define III(x,y) scanf("%d %d",&x,&y)
 #define FOR(i,a,b) for(int i=a;i<b;i++)
 using namespace std;
-LL tree[500000],lazy[500000];
-void insert(int n,int a,int b,int s,int e,int v){
+LL tree[5000000],lazy[5000000];
+LL insert(int n,int a,int b,int s,int e,int v){
 	if(lazy[n]){
-		tree[n]+=lazy[n];
-		lazy[2*n]+=lazy[n];
-		lazy[2*n+1]+=lazy[n];
+		tree[n]+=(b-a+1)*lazy[n];
+			lazy[2*n]+=lazy[n];
+			lazy[2*n+1]+=lazy[n];
 		lazy[n]=0;
 	}
+	LL change=0;
 	if(a==s&&b==e){
-		tree[n]+=(b-a+1)*v;
-		return;
+		lazy[n]+=v;
+		return (b-a+1)*((LL)v);
 	}
 	int m=(a+b)/2;
 	if(s>m)
-		insert(2*n+1,m,b,s,e,v);
+		change=insert(2*n+1,m+1,b,s,e,v);
 	else if(e<=m)
-		insert(2*n,a,m,s,e,v);
+		change=insert(2*n,a,m,s,e,v);
 	else{
-		insert(2*n,a,m,s,m,v);
-		insert(2*n+1,m+1,b,m+1,e,v);
+		change=insert(2*n,a,m,s,m,v);
+		change+=insert(2*n+1,m+1,b,m+1,e,v);
 	}
+	tree[n]+=change;
+	return change;
 }
 LL get(int n,int a,int b,int s, int e){
 	if(lazy[n]){
-		tree[n]+=lazy[n];
-		lazy[2*n]+=lazy[n];
-		lazy[2*n+1]+=lazy[n];
+		tree[n]+=(b-a+1)*lazy[n];
+			lazy[2*n]+=lazy[n];
+			lazy[2*n+1]+=lazy[n];
 		lazy[n]=0;
+	}
+	if(a==s&&b==e){
+		return tree[n];
 	}
 	int m=(a+b)/2;
 	if(s>m)
-		return get(2*n+1,m,b,s,e);
+		return get(2*n+1,m+1,b,s,e);
 	else if(e<=m)
 		return get(2*n,a,m,s,e);
 	else{
