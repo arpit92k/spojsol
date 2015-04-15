@@ -62,7 +62,7 @@ int main()
 			printf ("%d The minimum amount of money in the piggy-bank is %d.\n",T,dp[N][W]);
 		}
 		
-		
+//test		
  
 	}
 	return 0;
